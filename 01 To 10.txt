@@ -1,0 +1,445 @@
+
+#pragma warning (disable : 4996)
+
+#include<iostream>
+#include<string>
+#include<iomanip>
+#include<cmath>
+#include<ctime>
+#include<vector>
+
+
+#pragma warning (disable : 4996)
+
+#include<iostream>
+#include<string>
+#include<iomanip>
+#include<cmath>
+#include<ctime>
+#include<vector>
+
+
+
+using namespace std;
+
+
+
+//Problem 01
+long long ReadNumber(string message)
+{
+    long long Number = 0;
+    cout << message;
+    cin >> Number;
+    return Number;
+}
+string NumberToText(int Number)
+{
+    if (Number >= 1 && Number <= 19)
+    {
+        string ArrayNumbers[] = { "", "One", "Two" , "Three" , "Fore", "Five" , "Six" , "Seven" , "Eight"
+            , "Nien","Ten","Eleven","Twelve","Thierteen","Fourteen","Fifteen",
+        "Sixteen","Seventeen","Eighteen","Nineteen" };
+        return ArrayNumbers[Number];
+    }
+
+
+    else if (Number >= 20 && Number <= 99)
+    {
+        string ArrayyTens[] = { "","", "Twenty" , "Thirty" , "Forty" , "Fifty" , "Sixty" , "seventy" , "Eighty" , "Ninety" };
+
+        return ArrayyTens[Number / 10] + " " + NumberToText(Number % 10);
+    }
+
+
+    else if (Number >= 100 && Number <= 999)
+    {
+        return NumberToText(Number / 100) + " Hundreds " + NumberToText(Number % 100);
+    }
+
+
+    else if (Number >= 1000 && Number <= 9999)
+    {
+        return NumberToText(Number / 1000) + " Thousints " + NumberToText(Number % 1000);
+    }
+    else if (Number >= 10000 && Number <= 99999)
+    {
+        return NumberToText(Number / 1000) + " Thousints " + NumberToText(Number % 1000);
+    }
+    else if (Number >= 100000 && Number <= 999999)
+    {
+        return NumberToText(Number / 100000) + " Hundreds " + NumberToText(Number % 100000);
+    }
+    else if (Number > 1000000 && Number <= 9999999)
+    {
+        return NumberToText(Number / 1000000) + " Millions " + NumberToText(Number % 1000000);
+    }
+    else if (Number >= 10000000 && Number <= 99999999)
+    {
+        return NumberToText(Number / 1000000) + " Millions " + NumberToText(Number % 1000000);
+    }
+    else if (Number >= 100000000 && Number <= 999999999)
+    {
+        return NumberToText(Number / 10000000) + " Hundreds " + NumberToText(Number % 10000000);
+    }
+}
+
+
+
+
+
+
+
+
+//Problem 02
+short ReadCalinder(string message)
+{
+    short year = 0;
+    cout << message;
+    cin >> year;
+    return year;
+}
+
+bool CheckLeapYear(short Year)
+{
+    if (Year % 400 == 0)
+        return true; //That mean year is leap
+
+    if (Year % 4 == 0 && Year % 100 != 0)
+        return true;
+    return false;
+
+}
+
+
+
+//Problem 03
+bool IsLeapYear(short Year)
+{
+    return ((Year % 400 == 0) || ((Year % 4 == 0) && (Year % 100 != 0)));
+}
+bool IsLeapYearUsingShortIf(short Year)
+{
+    return Year % 400 == 0;
+}
+
+
+
+
+//Problem 04
+struct stYear
+{
+    short Hour;
+    int  Minit;
+    int  second;
+    int  Day;
+};
+stYear FillstYear(bool LeapYear)
+{
+    stYear Year{};
+
+    if (LeapYear)
+    {
+        Year.Day = 366;
+        Year.Hour = Year.Day * 24;
+        Year.Minit = Year.Hour * 60;
+        Year.second = Year.Minit * 60;
+    }
+    else
+    {
+        Year.Day = 365;
+        Year.Hour = Year.Day * 24;
+        Year.Minit = Year.Hour * 60;
+        Year.second = Year.Minit * 60;
+    }
+    return Year;
+}
+void PrintDataOfYear(short year)
+{
+    stYear Year = FillstYear(IsLeapYear(year));
+    printf("\n\nNumber of Day         in year [%d] is   %d \n", year, Year.Day);
+    printf("Number of Hours       in year [%d] is   %d \n", year, Year.Hour);
+    printf("Number of Minutes     in year [%d] is   %d \n", year, Year.Minit);
+    printf("Number of Seconds     in year [%d] is   %d \n", year, Year.second);
+}
+short NumberOfDays(short Year)
+{
+    return (IsLeapYear(Year) == true) ? 366 : 365;
+}
+int NumberOfHours(short Year)
+{
+    return NumberOfDays(Year) * 24;
+}
+int NumberOfMint(short Year)
+{
+    return NumberOfHours(Year) * 60;
+}
+int NumberOfSeconds(short Year)
+{
+    return NumberOfMint(Year) * 60;
+}
+
+
+
+
+
+
+
+
+
+
+//Problem 05
+enum enMonths { Jan = 1, Fib = 2, Mar = 3, Apr = 4, May = 5, Jun = 6, Jul = 7, Aga = 8, Sep = 9, Oct = 10, Nov = 11, Dec = 12 };
+
+short CheckAndReturnNumberOfDayInMonth(short year, short MOnth)
+{
+    if (MOnth == enMonths::Fib)
+        return (IsLeapYear(year)) ? 29 : 28;
+
+    else
+    {
+        short Array[] = { 1,3,5,7,8,9,10 };
+
+        for (int i = 0; i < 7; i++)
+        {
+            if (MOnth == (Array[i]))
+                return 31;
+
+        }
+    }
+    return 30;
+}
+short NumberOdDayInMonth(short year, enMonths MOnth)
+{
+    if (IsLeapYear(year) == true)
+        switch (MOnth)
+        {
+        case Jan:
+            return 31;
+            break;
+        case Fib:
+            return 29;
+            break;
+        case Mar:
+            return 31;
+            break;
+        case Apr:
+            return 30;
+            break;
+        case May:
+            return 31;
+            break;
+        case Jun:
+            return 30;
+            break;
+        case Jul:
+            return 31;
+            break;
+        case Aga:
+            return 31;
+            break;
+        case Sep:
+            return 30;
+            break;
+        case Oct:
+            return 31;
+            break;
+        case Nov:
+            return 30;
+            break;
+        case Dec:
+            return 31;
+            break;
+        }
+
+
+    else
+        switch (MOnth)
+        {
+        case Jan:
+            return 31;
+            break;
+        case Fib:
+            return 28;
+            break;
+        case Mar:
+            return 31;
+            break;
+        case Apr:
+            return 30;
+            break;
+        case May:
+            return 31;
+            break;
+        case Jun:
+            return 30;
+            break;
+        case Jul:
+            return 31;
+            break;
+        case Aga:
+            return 31;
+            break;
+        case Sep:
+            return 30;
+            break;
+        case Oct:
+            return 31;
+            break;
+        case Nov:
+            return 30;
+            break;
+        case Dec:
+            return 31;
+            break;
+        }
+
+}
+short NumberOfHourInMonth(short year, enMonths MOnth)
+{
+    return NumberOdDayInMonth(year, MOnth) * 24;
+}
+int NumberOfMintInMonth(short year, enMonths MOnth)
+
+{
+    return NumberOfHourInMonth(year, MOnth) * 60;
+}
+int NumberOfSecondsInMonth(short year, enMonths MOnth)
+{
+    return NumberOfMintInMonth(year, MOnth) * 60;
+
+}
+short NumberOfHourInMonth2(short year, enMonths MOnth)
+{
+    return CheckAndReturnNumberOfDayInMonth(year, MOnth) * 24;
+}
+int NumberOfMintInMonth2(short year, enMonths MOnth)
+
+{
+    return NumberOfHourInMonth2(year, MOnth) * 60;
+}
+int NumberOfSecondsInMonth2(short year, enMonths MOnth)
+{
+    return NumberOfMintInMonth2(year, MOnth) * 60;
+
+}
+
+
+//Problem 06
+
+short CheckAndReturnNumberOfDayInMonthShortLogic(short year, short MOnth)
+{
+
+    short Array[] = { 31,28,31,30,31,30,31,31,30,31,30,31 };
+
+    return (MOnth == enMonths::Fib) ? (IsLeapYear(year) ? 29 : 28) : (Array[MOnth - 1]);
+
+
+}
+
+
+//Problem 07
+
+short DayIndex(short year, enMonths MOnth, short Day)
+{
+
+
+    short A = (14 - int(MOnth)) / 12;
+    short Y = year - A;
+
+    short M = int(MOnth) + (12 * A) - 2;
+
+    short IndixDay = ((Day + Y + (Y / 4) - (Y / 100) + (Y / 400) + (31 * M / 12))) % 7;
+
+    return IndixDay;
+}
+string ShortDay(short Index)
+{
+    string Days[] = { "Sun","Mon","Tue","Wen","Thr","Fri","Sat" };
+    return Days[Index];
+}
+
+
+//Problem 08
+
+string ShortNameOfMonth(short Index)
+{
+    string Monthes[] = { ""," Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Des" };
+    return Monthes[Index];
+}
+void PrintMonthCalender(short year, short Month)
+{
+    short FirstDay = DayIndex(year, enMonths(Month), 1); //Name of first day 
+    short countrt = FirstDay;
+
+
+
+    cout << "\n\n\n   ------------------" << ShortNameOfMonth(Month) << " ----------------- " << endl;
+    cout << "   Sun   Mon   Tue   Wed   Thu   Fri   Sat" << endl;
+
+    for (int i = 0; i < FirstDay; i++)
+        printf("      ");
+
+    for (int j = 1; j <= CheckAndReturnNumberOfDayInMonthShortLogic(year, Month); j++)
+    {
+
+        printf("%6d", j);
+        if (countrt == 6)
+        {
+            cout << "\n";
+            countrt = -1;
+        }
+        countrt++;
+    }
+
+    cout << "\n   ---------------------------------------" << endl;
+}
+
+//Problem 09
+
+void YearCalender(short year)
+{
+    cout << "\n\n   ---------------------------------------" << endl << endl;
+    cout << "               Calender-" << year << endl;
+    cout << "\n   ---------------------------------------" << endl << endl;
+    for (int i = 1; i <= 12; i++)
+    {
+        PrintMonthCalender(year, i);
+        cout << endl << endl << endl;
+    }
+}
+
+
+
+//Problem 10
+
+short CountDaysFromBiganningYear(short year, short month, short Day)
+{
+    short Count = 0;
+    for (int i = 1; i <= month; i++)
+    {
+        if (i == month)
+        {
+            for (int j = 1; j < CheckAndReturnNumberOfDayInMonthShortLogic(year, i); j++)
+            {
+                if (j == Day)
+                {
+                    Count++;
+                    return Count;
+                }
+                else
+                    Count++;
+            }
+        }
+        Count += CheckAndReturnNumberOfDayInMonthShortLogic(year, i);
+    }
+}
+short CountDaysFromBigainningYear(short year, short month, short Day)
+{
+    short Counter = 0;
+    for (int i = 1; i <= month - 1; i++)
+    {
+        Counter += CheckAndReturnNumberOfDayInMonthShortLogic(year, i);
+    }
+    Counter += Day;
+    return Counter;
+}

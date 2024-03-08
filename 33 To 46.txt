@@ -1,0 +1,142 @@
+
+#pragma warning (disable : 4996)
+
+#include<iostream>
+#include<string>
+#include<iomanip>
+#include<cmath>
+#include<ctime>
+#include<vector>
+
+
+
+//Problem 33 to 46
+bool IsFirstDayInMonth(short Day)
+{
+    return Day == 1;
+}
+bool IsFiratMonthInYear(short Month)
+{
+    return Month == 1;
+}
+stDate DecreaseDareByOneDay(stDate& Date)
+{
+    if (IsFirstDayInMonth(Date.Day))
+    {
+
+        if (IsFiratMonthInYear(Date.Month))
+        {
+            Date.Month = 13;
+            Date.Year--;
+            Date.Day = 31;
+
+        }
+        Date.Month--;
+        Date.Day = CheckAndReturnNumberOfDayInMonthShortLogic(Date.Year, Date.Month);
+
+
+    }
+    else
+        Date.Day--;
+    return Date;
+}
+stDate DecreaseDareByXDay(stDate& Date, short NumberOfDays)
+{
+    for (int i = 1; i <= NumberOfDays; i++)
+    {
+        Date = DecreaseDareByOneDay(Date);
+    }
+    return Date;
+}
+stDate DecreaseDareByOneWeek(stDate& Date)
+{
+    return  DecreaseDareByXDay(Date, 7);
+}
+stDate DecreaseDareByXWeek(stDate& Date, short NumberOfWeek)
+{
+    for (int i = 1; i <= NumberOfWeek; i++)
+    {
+        Date = DecreaseDareByOneWeek(Date);
+    }
+    return Date;
+}
+stDate DecreaseDareByOneMonth(stDate& Date)
+{
+    if (IsFiratMonthInYear(Date.Month))
+    {
+        Date.Month = 12;
+        Date.Year--;
+    }
+    else if (Date.Day == CheckAndReturnNumberOfDayInMonthShortLogic(Date.Year, Date.Month))
+    {
+        Date.Month--;
+        Date.Day = CheckAndReturnNumberOfDayInMonthShortLogic(Date.Year, Date.Month);
+
+    }
+    else
+        Date.Month--;
+
+    return Date;
+}
+stDate DecreaseDareByXMonth(stDate& Date, short NumberOfMonth)
+{
+    for (int i = 1; i <= NumberOfMonth; i++)
+    {
+        Date = DecreaseDareByOneMonth(Date);
+    }
+    return Date;
+}
+stDate DecreaseDareByOneyear(stDate& Date)
+{
+    Date.Year--;
+    return Date;
+}
+stDate DecreaseDareByXyear(stDate& Date, short NumberOfYear)
+{
+    for (int i = 1; i <= NumberOfYear; i++)
+    {
+        Date = DecreaseDareByOneyear(Date);
+    }
+    return Date;
+}
+stDate DecreaseDareByXyear_Faster(stDate& Date, short NumberOfYear)
+{
+    Date.Year = Date.Year - NumberOfYear;
+    return Date;
+}
+stDate DecreaseDareByOneDecade(stDate& Date)
+{
+
+    Date = DecreaseDareByXyear_Faster(Date, 10);
+
+    return Date;
+}
+stDate DecreaseDareByXDecade(stDate& Date, short NumberOfDecade)
+{
+    for (int i = 1; i <= NumberOfDecade; i++)
+    {
+        Date = DecreaseDareByOneDecade(Date);
+    }
+    return Date;
+}
+stDate DecreaseDareByXDecade_Faster(stDate& Date, short NumberOfDecade)
+{
+    Date.Year = Date.Year - (10 * NumberOfDecade);
+
+    return Date;
+}
+stDate DecreaseDareByOneCentury(stDate& Date)
+{
+    Date.Year -= 100;
+
+    return  Date;
+
+}
+stDate DecreaseDareByOneMillennium(stDate& Date)
+{
+    Date.Year -= 1000;
+
+    return  Date;
+
+}
+

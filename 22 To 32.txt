@@ -1,0 +1,184 @@
+
+#pragma warning (disable : 4996)
+
+#include<iostream>
+#include<string>
+#include<iomanip>
+#include<cmath>
+#include<ctime>
+#include<vector>
+
+
+//Problem 20 to 32
+
+bool IsLastDayOnMONTH(short Day, short month, short year)
+{
+    return Day == CheckAndReturnNumberOfDayInMonthShortLogic(year, month);
+}
+bool IsLastMonthInYEAR(short month)
+{
+    return month >= 12;
+}
+stDate IncreaseDateByOneDay(stDate& Date)
+{
+
+    if (IsLastDayOnMONTH(Date.Day, Date.Month, Date.Year))
+    {
+        Date.Day = 1;
+        Date.Month++;
+        if (IsLastMonthInYEAR(Date.Month))
+        {
+            Date.Year++;
+            Date.Month = 1;
+        }
+    }
+    else
+        Date.Day++;
+
+
+
+    return Date;
+}
+stDate IncreaseDateByXXXDay(stDate& Date, short NumberOfDays)
+{
+
+    for (int i = 1; i <= NumberOfDays; i++)
+        Date = IncreaseDateByOneDay(Date);
+    return Date;
+
+}
+stDate IncreaseDateByOneWeek(stDate& Date)
+{
+
+    for (int i = 1; i <= 7; i++)
+    {
+        Date = IncreaseDateByOneDay(Date);
+    }
+
+    return Date;
+}
+stDate IncreaseDateByXXXWeek(stDate& Date, short NumberOfWeek)
+{
+
+    for (int i = 1; i <= NumberOfWeek; i++)
+        Date = IncreaseDateByOneWeek(Date);
+
+    return Date;
+
+}
+stDate IncreaseDateByOneMonthUsing_IncreaseDateByOneDay_(stDate& Date)
+{
+
+    for (int i = 1; i <= CheckAndReturnNumberOfDayInMonthShortLogic(Date.Year, Date.Month + 1); i++)
+    {
+        Date = IncreaseDateByOneDay(Date);
+    }
+    return Date;
+}
+stDate IncreaseDateByOneMonthUsingKnowlig(stDate& Date)
+{
+
+
+    if (IsLastMonthInYEAR(Date.Month))
+    {
+        Date.Year++;
+        Date.Month = 1;
+    }
+    else
+        Date.Month++;
+
+    return Date;
+}// There is an ERROR that when tne function add one month Number Of Day stays as it
+stDate IncreaseDateByXXXMonthUsing(stDate& Date, short NumberOfMonth)
+{
+    for (int i = 1; i <= NumberOfMonth; i++)
+        Date = IncreaseDateByOneMonthUsingKnowlig(Date);
+
+    return Date;
+}
+stDate IncreaseDateByOneYearFast(stDate& Date)
+{
+
+    Date.Year++;
+    return Date;
+}
+stDate IncreaseDateByXXXYearFast(stDate& Date, short NumberOfYear)
+{
+
+    for (int i = 1; i <= NumberOfYear; i++)
+    {
+        Date = IncreaseDateByOneYearFast(Date);
+    }
+
+    return Date;
+}
+stDate IncreaseDateByOneYear(stDate& Date)
+{
+
+    short DayYear = IsLeapYear(Date.Year) ? 366 : 365;
+
+    for (int i = 1; i <= DayYear; i++)
+    {
+        Date = IncreaseDateByOneDay(Date);
+    }
+
+    return Date;
+
+}
+stDate IncreaseDateByXXXYear(stDate& Date, short NumberOfYear)
+{
+
+    for (int i = 1; i <= NumberOfYear; i++)
+    {
+        Date = IncreaseDateByOneYear(Date);
+    }
+
+    return Date;
+}
+stDate IncreaseDateByONeDecode(stDate& Date)
+{
+
+    Date = IncreaseDateByXXXYearFast(Date, 10);
+
+    return Date;
+
+}
+stDate IncreaseDateByXXXDecode(stDate& Date, short NumberOfDecade)
+{
+
+    for (int i = 1; i <= NumberOfDecade; i++)
+    {
+        Date = IncreaseDateByONeDecode(Date);
+    }
+
+    return Date;
+}
+stDate IncreaseDateByXXXDecode_Faster_(stDate& Date, short NumberOfDecade)
+{
+    Date.Year += (NumberOfDecade * 10);
+    return Date;
+}
+stDate IncreaseDateByOneCentury(stDate& Date)
+{
+
+
+    for (int i = 1; i <= 10; i++)
+    {
+        Date = IncreaseDateByONeDecode(Date);
+    }
+
+    return Date;
+}
+stDate IncreaseDateByOneMillennium(stDate& Date)
+{
+    Date.Year += 1000;
+    return Date;
+}
+string PrintStDate(stDate Date)
+{
+    return to_string(Date.Day) + "/" + to_string(Date.Month) + "/" + to_string(Date.Year);
+}
+
+
+
+

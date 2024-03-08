@@ -1,0 +1,294 @@
+
+#pragma warning (disable : 4996)
+
+#include<iostream>
+#include<string>
+#include<iomanip>
+#include<cmath>
+#include<ctime>
+#include<vector>
+
+
+//Problem 11
+
+string ConverdTextToDate(short Days, short year)
+{
+
+
+    short count = 1;
+    while (Days >= 31)
+    {
+
+        Days -= CheckAndReturnNumberOfDayInMonthShortLogic(year, count);
+        count++;
+        if (count == 12)
+        {
+            year++;
+            count = 1;
+        }
+    }
+    return to_string(Days) + "/" + to_string(count) + "/" + to_string(year);
+}
+
+
+
+//Problem 12
+
+struct stDate
+{
+    short Day;
+    short Month;
+    short Year;
+
+};
+
+stDate ConverdDayToDate(short AllDay, short Year)
+{
+    stDate Date{};
+    Date.Year = Year;
+    short count = 1;
+    short MonthDay = CheckAndReturnNumberOfDayInMonthShortLogic(Year, count);
+
+    while (AllDay >= MonthDay)
+    {
+        AllDay -= MonthDay;
+
+
+        count++;
+        if (count > 12)
+        {
+            count = 1;
+            Date.Year++;
+        }
+        MonthDay = CheckAndReturnNumberOfDayInMonthShortLogic(Year, count);
+    }
+
+    Date.Month = count;
+    Date.Day = AllDay;
+
+
+
+    return Date;
+}
+stDate ReadDateFromUser()
+{
+    stDate Date{};
+    Date.Day = ReadCalinder("Enter Day : ");
+    Date.Month = ReadCalinder("Enter Month : ");
+    Date.Year = ReadCalinder("Enter year : ");
+
+    return Date;
+}
+
+
+
+//Problem 13
+
+enum enComp { eLassThan = 0, BiggerThan = 1, Equl = 2 };
+
+enComp ComparssinDate(stDate Date1, stDate Date2)
+{
+    return ((Date1.Year == Date2.Year) && (Date1.Month == Date2.Month) && (Date1.Day == Date2.Day)) ? enComp::Equl :
+        ((Date1.Year > Date2.Year) || (Date1.Month > Date2.Month) || (Date1.Day > Date2.Day)) ? enComp::BiggerThan : enComp::eLassThan;
+
+}
+bool IsDate1LessThanDate2(stDate Date1, stDate Date2)
+{
+    return (Date1.Year < Date2.Year) ? true : (Date1.Year == Date2.Year) ?
+
+
+        (Date1.Month < Date2.Month) ? true : (Date1.Month == Date2.Month) ?
+
+
+
+        (Date1.Day < Date2.Day) ? true : false : false : false;
+}
+
+//Problem 14
+bool IsDatesEqul(stDate Date1, stDate Date2)
+{
+    return ((Date1.Year == Date2.Year) ? ((Date1.Month == Date2.Month) ? ((Date1.Day == Date2.Day) ? true : false) : false) : false);
+
+
+
+
+}
+
+
+
+//Problem 15
+bool IsLastDayOnMonth(short year, short Month, short Day)
+{
+    short DayInMonth = CheckAndReturnNumberOfDayInMonthShortLogic(year, Month);
+    return (Day == DayInMonth);
+}
+bool IsLastMonthInYear(short month)
+{
+    return (month > 12);
+}
+
+
+//Problem 16
+
+void IncreasMonthByOne(short& Month, short& Year)
+{
+    if (IsLastMonthInYear(Month))
+    {
+        Month = 1;
+        Year++;
+    }
+}
+string IncreasDayByOneDaY(stDate Date)
+{
+    if (IsLastDayOnMonth(Date.Year, Date.Month, Date.Day))
+    {
+        Date.Month++;
+        IncreasMonthByOne(Date.Month, Date.Year);
+        Date.Day = 1;
+    }
+    else
+        Date.Day++;
+
+    return to_string(Date.Day) + "/" + to_string(Date.Month) + "/" + to_string(Date.Year);
+
+}
+void IncreasDayByOneDaY1(stDate& Date)
+{
+    if (IsLastDayOnMonth(Date.Year, Date.Month, Date.Day))
+    {
+        Date.Month++;
+        IncreasMonthByOne(Date.Month, Date.Year);
+        Date.Day = 1;
+    }
+    else
+        Date.Day++;
+
+
+}
+
+
+
+//Problem 17
+
+int EquledYear(short year1, short year2, short Month)
+{
+    int Days = 0;
+    short Diff = year2 - year1;
+
+    for (int i = 1; i <= abs(Diff); i++)
+    {
+        if (IsLeapYear(year1))
+            Days += 366;
+        else
+            Days += 365;
+
+        year1++;
+    }
+    return Days;
+}
+int DiffernceBitwenTwoDate(stDate Date1, stDate Date2)
+{
+    short NumberOfDaysInDate1 = 0;
+    short NumberOfDaysInDate2 = 0;
+
+    if (Date1.Year != Date2.Year)
+    {
+        NumberOfDaysInDate2 = EquledYear(Date1.Year, Date2.Year, Date1.Month) + CountDaysFromBigainningYear(Date2.Year, Date2.Month, Date2.Day);
+        NumberOfDaysInDate1 = CountDaysFromBigainningYear(Date1.Year, Date1.Month, Date1.Day);
+
+    }
+    else
+    {
+        NumberOfDaysInDate1 = CountDaysFromBigainningYear(Date1.Year, Date1.Month, Date1.Day);
+        NumberOfDaysInDate2 = CountDaysFromBigainningYear(Date2.Year, Date2.Month, Date2.Day);
+    }
+
+    return abs(NumberOfDaysInDate1 - NumberOfDaysInDate2);
+}
+void swapDate(stDate& Date1, stDate& Date2)
+{
+    stDate Temp;
+
+    Temp.Year = Date1.Year;
+    Temp.Month = Date1.Month;
+    Temp.Day = Date1.Day;
+
+    Date1.Year = Date2.Year;
+    Date1.Month = Date2.Month;
+    Date1.Day = Date2.Day;
+
+
+    Date2.Year = Temp.Year;
+    Date2.Month = Temp.Month;
+    Date2.Day = Temp.Day;
+
+}
+int GetDiffenceDate1AndDate2(stDate Date1, stDate Date2, bool CountEndDay = false)
+{
+    int Days = 0;
+    while (IsDate1LessThanDate2(Date1, Date2))
+    {
+        Days++;
+        IncreasDayByOneDaY1(Date1);
+    }
+    return CountEndDay ? Days + 1 : Days;
+}
+
+
+
+//Problem 18
+
+stDate GetDateSystem()
+{
+    stDate Date;
+    time_t t = time(0);
+    tm* Time = localtime(&t);
+
+    Date.Year = Time->tm_year + 1900;
+    Date.Month = Time->tm_mon + 1;
+    Date.Day = Time->tm_mday;
+
+    return Date;
+}
+int fuctionCountYear(short year)
+{
+    time_t t = time(0);
+    tm* Time = gmtime(&t);
+    int count = 0;
+    for (int i = year; i < Time->tm_year + 1900; i++)
+    {
+        if (IsLeapYear(i))
+            count += 366;
+        else
+            count += 365;
+    }
+    return count;
+}
+int functionCountMonth(short month, short year)
+{
+    time_t t = time(0);
+    tm* Time = gmtime(&t);
+    int count = 0;
+    for (int i = 1; i <= Time->tm_mon; i++)
+    {
+        count += CheckAndReturnNumberOfDayInMonthShortLogic(year, i);
+    }
+
+    return count;
+}
+int AgeAtDays(stDate Date)
+{
+    time_t tim = time(0);
+    tm* Time = gmtime(&tim);
+    int count = fuctionCountYear(Date.Year);
+    count += functionCountMonth(Date.Month, Date.Year);
+    count += Time->tm_mday;
+
+
+    return count;
+} //Errer In This function is starts count from bigainning of yera   28/4/2003 it starts counting from 2003   ((28/4)Addation) 
+int AgeAtDaysUsingDiffFunction(stDate Date1)
+{
+    return GetDiffenceDate1AndDate2(Date1, GetDateSystem());
+}
+//Problem 19

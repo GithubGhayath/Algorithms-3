@@ -1,0 +1,481 @@
+
+#pragma warning (disable : 4996)
+
+#include<iostream>
+#include<string>
+#include<iomanip>
+#include<cmath>
+#include<ctime>
+#include<vector>
+
+
+//Problem 47 to 53
+enum enDays { Sun, Mon, Tue, Wen, Thr, Fri, Sat };
+short DayIndex(stDate Date)
+{
+
+
+    short A = (14 - int(Date.Month)) / 12;
+    short Y = Date.Year - A;
+
+    short M = int(Date.Month) + (12 * A) - 2;
+
+    short IndixDay = ((Date.Day + Y + (Y / 4) - (Y / 100) + (Y / 400) + (31 * M / 12))) % 7;
+
+    return IndixDay;
+}
+stDate GetDate()
+{
+    stDate Date{};
+
+    time_t t = time(0);
+    tm* Time = localtime(&t);
+    Date.Year = Time->tm_year + 1900;
+    Date.Month = Time->tm_mon + 1;
+    Date.Day = Time->tm_mday;
+
+    return Date;
+}
+void PrintDateToDay(stDate Date)
+{
+
+    cout << "Today is " << ShortDay(DayIndex(Date)) << " , " << Date.Day << "/" << Date.Month << "/" << Date.Year << endl << endl;
+}
+bool IsEndOfWeek(stDate Date)
+{
+    return ShortDay(DayIndex(Date)) == "Sat";// true : End week  
+}
+bool IsBusinessDay(stDate Date)
+{
+    if (DayIndex(Date) != enDays::Fri && DayIndex(Date) != enDays::Sat)
+    {
+        return true; // Day BusinessDay
+    }
+    else
+        return false; //Holiday
+}
+short CountDayUntilEndOfWeek(stDate Date)
+{
+    short count = 0;
+    while (!IsEndOfWeek(Date))
+    {
+        count++;
+        Date.Day += 1;
+    }
+
+    return count;
+
+}
+short CountDayUntilEndOfMonth_UsingFunction_(stDate Date)
+{
+    return CheckAndReturnNumberOfDayInMonthShortLogic(Date.Year, Date.Month) - Date.Day;
+}
+short CountDayUntilEndOfMonth(stDate Date)
+{
+    short Count = 0;
+    for (int i = Date.Day; i < CheckAndReturnNumberOfDayInMonthShortLogic(Date.Year, Date.Month); i++)
+    {
+        Count++;
+    }
+    return Count;
+}
+short CountDayUntilEndOfYear(stDate Date)
+{
+    short Count = 0;
+
+    if (Date.Month != 13)
+    {
+
+        Count = CheckAndReturnNumberOfDayInMonthShortLogic(Date.Year, Date.Month);
+        Date.Month += 1;
+        Count += CountDayUntilEndOfYear(Date);
+    }
+    else
+        return   Count - Date.Day;
+}
+
+
+
+
+//Problem 54
+
+
+
+bool IsDate1BeforeDate2(stDate Date1, stDate Date2)
+{
+    return (Date1.Year < Date2.Year) ? true : (Date1.Year == Date2.Year) ? (Date1.Month < Date2.Month) ?
+        true : (Date1.Month == Date2.Month) ? (Date1.Day < Date2.Day) ? true : false : false : false;
+}
+
+stDate IncreaseDateByOneDay2(stDate Date)
+{
+    if (IsLastDayOnMONTH(Date.Day, Date.Month, Date.Year))
+    {
+        if (IsLastMonthInYEAR(Date.Month))
+        {
+            Date.Day = 1;
+            Date.Month = 1;
+            Date.Year += 1;
+        }
+        else
+        {
+            Date.Day = 1;
+            Date.Month += 1;
+        }
+    }
+    else
+        Date.Day += 1;
+    return Date;
+}
+
+short CountDayUntilEndOfYear(stDate start, stDate end)
+{
+    short CountDay = 0;
+    while (IsDate1BeforeDate2(start, end))
+    {
+        if (IsBusinessDay(start))
+            CountDay++;
+        
+        start = IncreaseDateByOneDay2(start);
+    }
+    return CountDay;
+
+}
+void CoutVacation()
+{
+    cout << "Vacation Start : " << endl;
+
+    stDate Date1 = ReadDateFromUser();
+
+    cout << "\n\n\nVacation Ends : " << endl;
+    stDate Date2 = ReadDateFromUser();
+    cout << "\n\n\nVacation from : " << ShortDay(DayIndex(Date1)) << " , " << Date1.Day << "/" << Date1.Month << "/" << Date1.Year << endl;
+    cout << "Vacation end : " << ShortDay(DayIndex(Date2)) << " , " << Date2.Day << "/" << Date2.Month << "/" << Date2.Year << endl;
+
+
+    cout << "\n\nActucal vacation days is : " << CountDayUntilEndOfYear(Date1, Date2) << endl;
+
+}
+
+
+//Problem 55
+
+stDate ReturnDate(stDate Date, short Vacation)
+{
+    short Count = 0;
+    while(Count!=Vacation)
+    {
+        if (!IsBusinessDay(Date))
+        {
+            Date = IncreaseDateByOneDay2(Date);
+        }
+        else
+        {
+            Date = IncreaseDateByOneDay2(Date);
+            Count++;
+        }
+
+       
+        
+       
+    }
+    return Date;
+}
+short ReadVacation()
+{
+    short Vacation = 0;
+    cout << "PLease eneter Vacation Days : ";
+    cin >> Vacation;
+    
+    return Vacation;
+
+}
+
+//Problem 56
+
+bool IsDate1AfterDate2(stDate Date1, stDate Date2)
+{
+    return (Date1.Year > Date2.Year) ? true : (Date1.Year == Date2.Year) ?
+        (Date1.Month > Date2.Month) ? true : (Date1.Month == Date2.Month) ?
+        (Date1.Day > Date2.Day) ? true : false : false : false;
+}
+bool IsDate1AfterDate2onather(stDate Date1, stDate Date2)
+{
+    return (!IsDate1BeforeDate2(Date1, Date2) && !IsDatesEqul(Date1, Date2));
+}
+
+
+//Problem 57
+
+enum enComper { Equal = 0, After = 1, Befor = -1 };
+enComper CompareDate(stDate Date1, stDate Date2)
+{
+    //short Hand if
+
+    return (IsDate1AfterDate2onather(Date1, Date2) == true) ? enComper::After : (IsDate1BeforeDate2(Date1, Date2) == true) ? enComper::Befor : enComper::Equal;
+
+
+}
+
+
+//Problem 58
+
+
+
+// (1) 1/2/2022 (2) 15/2/2022        (2) 5/2/2022   (1) 10/2/2022  Remember This Idea
+
+struct stPeriod
+{
+    stDate StartPeriod;
+    stDate EndPeriod;
+};
+stPeriod ReadPeriod()
+{
+    stPeriod Period{};
+    cout << "Enter Start Date: " << endl << endl;
+    Period.StartPeriod= ReadDateFromUser();
+    cout << "\n\nEnter End Date:" << endl;
+    Period.EndPeriod = ReadDateFromUser();
+
+    return Period;
+}
+void TalkPeriodAndConverToArray(stPeriod Period, stDate ArrayOfDate[], short &Count)
+{
+     
+    while (CompareDate(Period.StartPeriod, Period.EndPeriod) != enComper::Equal)
+    {
+        ArrayOfDate[Count] = Period.StartPeriod;
+        IncreaseDateByOneDay(Period.StartPeriod);
+        Count++;
+    }
+  
+    ArrayOfDate[Count] = Period.EndPeriod;
+}
+bool ChechCommenDates(stDate ArrayOfDate1[], stDate ArrayOfDate2[], short length1, short length2)
+{
+    for (int i = 0; i <= length1; i++)
+    {
+        for (int j = 0; j < length2; j++)
+        {
+            if (CompareDate(ArrayOfDate1[i], ArrayOfDate2[j]) == enComper::Equal)
+                return true;// There is a commen date
+        }
+    }
+    return false;// There is Not a commen date
+}
+void IsDatesOverlap()
+{
+    stPeriod StartPeriod{};
+    stPeriod EndPeriod{};
+
+    stDate AllDateStart[100], AllDateEnd[100];
+    short length1 = 0, length2 = 0;
+
+
+    cout << "Enter Period 1 : " << endl;
+    cout << "Enter Start Date: " << endl << endl;
+    StartPeriod.StartPeriod= ReadDateFromUser();
+    cout << "\n\nEnter End Date:" << endl;
+    StartPeriod.EndPeriod = ReadDateFromUser();
+    TalkPeriodAndConverToArray(StartPeriod, AllDateStart, length1);
+    
+    
+    cout << "\n\nEnter Period 2 : " << endl;
+    cout << "Enter Start Date: " << endl << endl;
+    EndPeriod.StartPeriod = ReadDateFromUser();
+    cout << "\n\nEnter End Date:" << endl;
+    EndPeriod.EndPeriod = ReadDateFromUser();
+    TalkPeriodAndConverToArray(EndPeriod, AllDateEnd, length2);
+
+    (ChechCommenDates(AllDateStart, AllDateEnd, length1, length2) == true) ? cout << "\n\n\nYes, Periods are Overlap" : cout << "\n\n\nNo, Periods aren't Overlap";
+
+
+    // There is a problem that Array of date mabye oversize Or mabye small
+
+}
+bool IsDatesOverlap(stPeriod Period1, stPeriod Period2)
+{
+    if (CompareDate(Period1.EndPeriod, Period2.StartPeriod) == enComper::Befor || CompareDate(Period2.EndPeriod, Period1.StartPeriod) == enComper::Befor)
+        return false;
+    else
+        return true;
+}
+
+//Problem 59
+short CountLengthOfPeriod(stPeriod Period,bool IncludeEndDay=false)
+{
+    short lengthOfPeriod = 0;
+    while (CompareDate(Period.StartPeriod, Period.EndPeriod) == enComper::Befor)
+    {
+        lengthOfPeriod++;
+        Period.StartPeriod=IncreaseDateByOneDay(Period.StartPeriod);
+    }
+   return IncludeEndDay ? lengthOfPeriod + 1 : lengthOfPeriod;
+
+}
+short CountLengthOfPeriodUsingGetDeffereneceInDate(stPeriod Period, bool IncludeEndDay = false)
+{
+    return GetDiffenceDate1AndDate2(Period.StartPeriod, Period.EndPeriod, IncludeEndDay);
+}
+
+
+//Problem 60
+
+bool IsDateInPeriod(stPeriod Period, stDate Date)
+{
+    while (CompareDate(Period.StartPeriod, Period.EndPeriod) == enComper::Befor)
+    {
+        if (CompareDate(Period.StartPeriod, Date) == enComper::Equal)
+            return true; // The Date Is in The Period 
+        Period.StartPeriod = IncreaseDateByOneDay(Period.StartPeriod);
+    }
+
+    return false;
+}
+bool IsDateInPeriodUsingShortHandIf(stPeriod Period, stDate Date)
+{
+    return ((CompareDate(Date, Period.StartPeriod) == enComper::After) && (CompareDate(Date, Period.EndPeriod) == enComper::Befor));
+    //true : Date is Within Period
+    //false : Date is NOT Within Period
+}
+
+//Problem 61
+
+short CountOverLapPeriod(stPeriod Period1, stPeriod Period2)
+{
+    if (!IsDatesOverlap(Period1, Period2))
+    {
+        return 0;
+    }
+
+    int LengthOfStartPeriod = CountLengthOfPeriodUsingGetDeffereneceInDate(Period1,true);
+    int LengthOfEndPeriod = CountLengthOfPeriodUsingGetDeffereneceInDate(Period2, true);
+   
+    short Count = 0;
+ 
+    
+   if(LengthOfStartPeriod< LengthOfEndPeriod)
+   {
+       while(CompareDate(Period1.StartPeriod, Period1.EndPeriod)==enComper::Befor)
+       {
+           if (IsDateInPeriodUsingShortHandIf(Period2, Period1.StartPeriod))
+           {
+               Count++;
+           }
+           Period1.StartPeriod = IncreaseDateByOneDay(Period1.StartPeriod);
+       }
+
+   }
+   else
+       while (CompareDate(Period2.StartPeriod, Period2.EndPeriod) == enComper::Befor)
+       {
+           if (IsDateInPeriodUsingShortHandIf(Period1, Period2.StartPeriod))
+           {
+               Count++;
+           }
+           Period2.StartPeriod = IncreaseDateByOneDay(Period2.StartPeriod);
+       }
+    
+   return Count + 1;
+   
+}
+
+
+
+
+//Problem 62
+
+bool IsvalidadateDate(stDate Date)
+{
+    return (Date.Year > 0) ? (Date.Month > 0 && Date.Month < 13) ? (Date.Day <= CheckAndReturnNumberOfDayInMonthShortLogic(Date.Year, Date.Month)) : false : false;
+}
+
+
+
+
+//Problem 63
+
+string ReadDate()
+{
+    string Date = "";
+
+
+    
+    
+
+        cout << "Please enter date dd/mm/yy ? ";
+        cin >> Date;
+
+
+    
+
+
+    return Date;
+}
+stDate SplitDate(string Date, string sep = "/")
+{
+    stDate DateS{};
+    short Pos = 0;
+    vector<string> vDate;
+    string D = "";
+
+    while ((Pos = Date.find(sep)) != std::string::npos)
+    {
+        D = Date.substr(0, Pos);
+        if (D != " ")
+        {
+            vDate.push_back(D);
+        }
+        Date = Date.erase(0, Pos + sep.length());
+    }
+    if (Date != " ")
+        vDate.push_back(Date);
+
+    DateS.Day = stoi(vDate[0]);
+    DateS.Month = stoi(vDate[1]);
+    DateS.Year = stoi(vDate[2]);
+
+    return DateS;
+
+}
+string DateToString(stDate Date)
+{
+    return to_string(Date.Day) + "/" + to_string(Date.Month) + "/" + to_string(Date.Year);
+}
+
+
+
+//Problem 64 End
+string FormatDate(string Date,string format)
+{
+    stDate DateStruct = SplitDate(Date);
+
+   
+    if (format == "d/m/y")
+        return  to_string(DateStruct.Day) + "/" + to_string(DateStruct.Month) + "/" + to_string(DateStruct.Year);
+    else if (format == "y/d/m")
+        return   to_string(DateStruct.Year) + "/" + to_string(DateStruct.Day) + "/" + to_string(DateStruct.Month);
+    else if (format == "m/d/y")
+        return   to_string(DateStruct.Month) + "/" + to_string(DateStruct.Day) + "/" + to_string(DateStruct.Year);
+    else if (format == "m-d-y")
+        return to_string(DateStruct.Month) + "-" + to_string(DateStruct.Day) + "-" + to_string(DateStruct.Year);
+    else if (format == "d-m-y")
+        return  to_string(DateStruct.Day) + "-" + to_string(DateStruct.Month) + "-" + to_string(DateStruct.Year);
+    else if(format=="Day:dd, month:mm, year:yy")
+        return "Days:" + to_string(DateStruct.Day) + ", Month:" + to_string(DateStruct.Month) + ", Year:" + to_string(DateStruct.Year);
+   
+}
+string FormatDateUsingReplace(string Date, string format)
+{
+    string DATE = "";
+    stDate DateStruct = SplitDate(Date);
+
+    DATE = format.replace(format.find("dd"), 2, to_string(DateStruct.Day));
+    DATE = format.replace(format.find("mm"), 2, to_string(DateStruct.Month));
+    DATE = format.replace(format.find("yy"), 2, to_string(DateStruct.Year));
+
+    return DATE;
+}
+
+
+
